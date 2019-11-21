@@ -1,3 +1,4 @@
+chmod 400 $FED_GP2_PEM
 ssh \
   -o "StrictHostKeyChecking=no" \
   -i $FED_GP2_PEM $FED_GP2_USER@$FED_GP2_IP \
