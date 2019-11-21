@@ -65,4 +65,37 @@ public class BankService {
       }
     }
   }
+
+  /**
+   * Get user data based on accountNumber.
+   * @return user data
+   * @throws SQLException if there are problems with the SQL
+   */
+  @WebMethod(operationName = "getUserData")
+  public String getUserData(@WebParam(name = "accountNumber") String accountNumber) throws SQLException {
+    JSONArray userData = new JSONArray();
+    String query = "SELECT * "
+      + "FROM account NATURAL JOIN transaction "
+      + "WHERE account_number = " + accountNumber;
+    System.out.println(query);
+
+    try (Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/bank", "didik", "didik")) {
+      try (Statement stmt = conn.createStatement()) {
+        try (ResultSet rs = stmt.executeQuery(query)) {
+          while (rs.next()) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", rs.getString("name"));
+            obj.put("account_number", rs.getString("account_number"));
+            obj.put("balance", rs.getString("balance"));
+            obj.put("transaction_time", rs.getString("transaction_time"));
+            obj.put("linked_number", rs.getString("linked_number"));
+            obj.put("type", rs.getString("type"));
+            obj.put("amount", rs.getString("amount"));
+            userData.put(obj);
+          }
+          return userData.toString();
+        }
+      }
+    }
+  }
 }
