@@ -1,0 +1,16 @@
+stages:
+  - test
+  - deploy
+
+lint:
+  stage: test
+  script:
+    - mvn checkstyle:check
+
+deploy:
+  only:
+    - master
+    - develop
+  stage: deploy
+  script:
+    - bash deploy.sh
