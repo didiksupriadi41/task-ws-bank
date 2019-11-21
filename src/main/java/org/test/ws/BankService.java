@@ -13,6 +13,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import java.util.Random;
 
 /**
  * BankService serves bank functionality.
@@ -95,6 +96,25 @@ public class BankService {
           }
           return userData.toString();
         }
+      }
+    }
+  }
+
+  @WebMethod(operationName = "createVirtualAccount")
+  public String createVirtualAccount(@WebParam(name="accountNumber") String accountNumber) throws SQLException {
+    JSONArray virtualAccount = new JSONArray();
+    Random rnd = new Random();
+    String v_account = Long.toString(System.currentTimeMillis() * 1000 + rnd.nextInt(900) + 100);
+    String query = "INSERT INTO virtual_account"
+      + "VALUES(" + v_account + "," + accountNumber + ")";
+
+    try (Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/bank", "didik", "didik")){
+      try (Statement stmt = conn.createStatement()) {
+        stmt.executeQuery(query);
+        JSONObject obj = new JSONObject();
+        obj.put("virtual_account", v_account);
+        virtualAccount.put(obj);
+        return virtualAccount.toString();
       }
     }
   }
