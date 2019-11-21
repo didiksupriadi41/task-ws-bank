@@ -76,10 +76,3 @@ CREATE TABLE `virtual_account` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2019-11-20  1:19:34
--- Initiation data
-INSERT INTO account VALUES( '0527481550', 'Didik',  0);
-INSERT INTO account VALUES( '0527481551', 'Johanes', 6000000);
-INSERT INTO account VALUES( '0527481552', 'Louis',  7000000);
-INSERT INTO transaction VALUES(NOW(), '0527481551', 'D', 6000000, '0527481550');
-INSERT INTO transaction VALUES(NOW(), '0527481550', 'K', 6000000, '0527481551');
--- Initiation completed
