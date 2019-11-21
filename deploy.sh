@@ -4,7 +4,7 @@ ssh \
   -i $FED_GP2_PEM $FED_GP2_USER@$FED_GP2_IP \
   "rm -rf ws-bank; mkdir ws-bank";
 
-scp \
+scp -r \
   -o "StrictHostKeyChecking=no" \
   -i $FED_GP2_PEM \
   * $FED_GP2_USER@$FED_GP2_IP:/home/$FED_GP2_USER/ws-bank;
