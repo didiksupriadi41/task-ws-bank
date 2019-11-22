@@ -20,7 +20,6 @@ deploy:
   only:
     - master
     - develop
-    - feature/ci_cd
   stage: deploy
   script:
     - bash deploy.sh
