@@ -14,6 +14,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import java.util.Random;
 
 /**
  * BankService serves bank functionality.
@@ -57,6 +58,21 @@ public class BankService {
    * Query paramenter index.
    */
   public static final int Q_PARAM_4 = 4;
+
+  /**
+   * Return 1000.
+   */
+  public static final int SERIBU = 1000;
+
+  /**
+   * Return 900.
+   */
+  public static final int SEMBILANRATUS = 900;
+
+  /**
+   * Return 100.
+   */
+  public static final int SERATUS = 100;
 
   /**
    * DEMO: sayHello.
@@ -185,6 +201,43 @@ public class BankService {
         try (ResultSet rs = stmt.executeQuery()) {
           return rs.first();
         }
+      }
+    }
+  }
+
+  /**
+   * Create Virtual Account for specific accountNumber.
+   *
+   * @param accountNumber accountNumber for virtualaccount
+   * @return virtualAccount as JSON array
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  @WebMethod(operationName = "createVirtualAccount")
+  public String createVirtualAccount(
+      @WebParam(name = "accountNumber") final String accountNumber)
+      throws SQLException {
+
+    JSONArray virtualAccount = new JSONArray();
+    Random rnd = new Random();
+    String vAccount = Long.toString(System.currentTimeMillis() * SERIBU
+    + rnd.nextInt(SEMBILANRATUS) + SERATUS);
+
+    String query = "INSERT INTO virtual_account VALUES(?,?)";
+
+    try (Connection conn = DriverManager.getConnection(
+      JDBC_MARIADB_BANK,
+      USER,
+      PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(Q_PARAM_1, vAccount);
+        stmt.setString(Q_PARAM_2, accountNumber);
+        stmt.executeQuery(query);
+
+        JSONObject obj = new JSONObject();
+        obj.put("virtual_account", vAccount);
+        virtualAccount.put(obj);
+
+        return virtualAccount.toString();
       }
     }
   }
