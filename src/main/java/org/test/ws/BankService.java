@@ -22,9 +22,41 @@ import javax.jws.soap.SOAPBinding;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class BankService {
 
-  public static final String JDBC_MARIADB_BANK = "jdbc:mariadb://localhost:3306/bank";
+  /**
+   * DB URL.
+   */
+  public static final String JDBC_MARIADB_BANK =
+    "jdbc:mariadb://localhost:3306/bank";
+
+  /**
+   * DB User.
+   */
   public static final String USER = "didik";
+
+  /**
+   * DB Password.
+   */
   public static final String PASSWORD = "didik";
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_1 = 1;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_2 = 2;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_3 = 3;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_4 = 4;
 
   /**
    * DEMO: sayHello.
@@ -95,7 +127,7 @@ public class BankService {
         USER,
         PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, accountNumber);
+        stmt.setString(Q_PARAM_1, accountNumber);
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             JSONObject obj = new JSONObject();
@@ -121,7 +153,8 @@ public class BankService {
    * @param amount String of amount.
    * @param startDate String of start date.
    * @param endDate String of end date.
-   * @return <code>true</code> if transaction exist, <code>false</code> otherwise.
+   * @return <code>true</code> if transaction exist,
+   * <code>false</code> otherwise.
    * @throws SQLException Triggered if there are problems with SQL
    */
   @WebMethod(operationName = "checkTransactionBetween")
@@ -133,22 +166,22 @@ public class BankService {
       throws SQLException {
 
     String query = "SELECT * "
-      + "FROM transaction "
-      + "WHERE transaction_time > '?' "
-      + "AND transaction_time < '?' "
-      + "AND linked_number = '?' "
-      + "AND amount = '?' "
-      + "AND type = 'K';";
+        + "FROM transaction "
+        + "WHERE transaction_time > ? "
+        + "AND transaction_time < ? "
+        + "AND linked_number = ? "
+        + "AND amount = ? "
+        + "AND type = 'K';";
 
     try (Connection conn = DriverManager.getConnection(
-          JDBC_MARIADB_BANK,
-          USER,
-          PASSWORD)) {
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, startDate);
-        stmt.setString(2, endDate);
-        stmt.setString(3, linkedNumber);
-        stmt.setString(4, amount);
+        stmt.setString(Q_PARAM_1, startDate);
+        stmt.setString(Q_PARAM_2, endDate);
+        stmt.setString(Q_PARAM_3, linkedNumber);
+        stmt.setString(Q_PARAM_4, amount);
         try (ResultSet rs = stmt.executeQuery()) {
           return rs.first();
         }
