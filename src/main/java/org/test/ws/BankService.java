@@ -26,8 +26,7 @@ public class BankService {
   /**
    * DB URL.
    */
-  public static final String JDBC_MARIADB_BANK =
-    "jdbc:mariadb://localhost:3306/bank";
+  public static final String JDBC_MARIADB_BANK = "jdbc:mariadb://localhost:3306/bank";
 
   /**
    * DB User.
@@ -89,19 +88,6 @@ public class BankService {
   }
 
   /**
-   * DEMO: checkCard.
-   *
-   * @param cardNumber someone's card number
-   * @return <code>true</code> if the card is exist in db
-   */
-  @WebMethod(operationName = "checkCard")
-  public boolean checkCard(
-      @WebParam(name = "cardNumber")
-      final String cardNumber) {
-    return true;
-  }
-
-  /**
    * DEMO: Get the first nasabah's name in db.
    *
    * @return name of the first nasabah in db
@@ -109,10 +95,7 @@ public class BankService {
    */
   @WebMethod(operationName = "getFirstNasabah")
   public String getFirstNasabah() throws SQLException {
-    try (Connection conn = DriverManager.getConnection(
-        JDBC_MARIADB_BANK,
-        USER,
-        PASSWORD)) {
+    try (Connection conn = DriverManager.getConnection(JDBC_MARIADB_BANK, USER, PASSWORD)) {
       try (Statement stmt = conn.createStatement()) {
         try (ResultSet rs = stmt.executeQuery("select * from account")) {
           rs.first();
@@ -130,18 +113,11 @@ public class BankService {
    * @throws SQLException Triggered if there are problems with the SQL
    */
   @WebMethod(operationName = "getUserData")
-  public String getUserData(@WebParam(name = "accountNumber")
-      final String accountNumber)
-      throws SQLException {
+  public String getUserData(@WebParam(name = "accountNumber") final String accountNumber) throws SQLException {
     JSONArray userData = new JSONArray();
-    String query = "SELECT * "
-      + "FROM account NATURAL JOIN transaction "
-      + "WHERE account_number = ?;";
+    String query = "SELECT * " + "FROM account NATURAL JOIN transaction " + "WHERE account_number = ?;";
 
-    try (Connection conn = DriverManager.getConnection(
-        JDBC_MARIADB_BANK,
-        USER,
-        PASSWORD)) {
+    try (Connection conn = DriverManager.getConnection(JDBC_MARIADB_BANK, USER, PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
         stmt.setString(Q_PARAM_1, accountNumber);
         try (ResultSet rs = stmt.executeQuery()) {
@@ -166,33 +142,21 @@ public class BankService {
    * Check transactions between two Date.
    *
    * @param linkedNumber String of linked number.
-   * @param amount String of amount.
-   * @param startDate String of start date.
-   * @param endDate String of end date.
-   * @return <code>true</code> if transaction exist,
-   * <code>false</code> otherwise.
+   * @param amount       String of amount.
+   * @param startDate    String of start date.
+   * @param endDate      String of end date.
+   * @return <code>true</code> if transaction exist, <code>false</code> otherwise.
    * @throws SQLException Triggered if there are problems with SQL
    */
   @WebMethod(operationName = "checkTransactionBetween")
-  public boolean checkTransactionBetween(
-      @WebParam(name = "linkedNumber") final String linkedNumber,
-      @WebParam(name = "amount") final String amount,
-      @WebParam(name = "startDate") final String startDate,
-      @WebParam(name = "endDate") final String endDate)
-      throws SQLException {
+  public boolean checkTransactionBetween(@WebParam(name = "linkedNumber") final String linkedNumber,
+      @WebParam(name = "amount") final String amount, @WebParam(name = "startDate") final String startDate,
+      @WebParam(name = "endDate") final String endDate) throws SQLException {
 
-    String query = "SELECT * "
-        + "FROM transaction "
-        + "WHERE transaction_time > ? "
-        + "AND transaction_time < ? "
-        + "AND linked_number = ? "
-        + "AND amount = ? "
-        + "AND type = 'K';";
+    String query = "SELECT * " + "FROM transaction " + "WHERE transaction_time > ? " + "AND transaction_time < ? "
+        + "AND linked_number = ? " + "AND amount = ? " + "AND type = 'K';";
 
-    try (Connection conn = DriverManager.getConnection(
-        JDBC_MARIADB_BANK,
-        USER,
-        PASSWORD)) {
+    try (Connection conn = DriverManager.getConnection(JDBC_MARIADB_BANK, USER, PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
         stmt.setString(Q_PARAM_1, startDate);
         stmt.setString(Q_PARAM_2, endDate);
@@ -203,6 +167,7 @@ public class BankService {
         }
       }
     }
+
   }
 
   /**
