@@ -60,6 +60,21 @@ public class BankService {
   public static final int Q_PARAM_4 = 4;
 
   /**
+   * Return 1000.
+   */
+  public static final int SERIBU = 1000;
+
+  /**
+   * Return 900.
+   */
+  public static final int SEMBILANRATUS = 900;
+
+  /**
+   * Return 100.
+   */
+  public static final int SERATUS = 100;
+
+  /**
    * DEMO: sayHello.
    *
    * @param guestname someone's name
@@ -189,23 +204,23 @@ public class BankService {
       }
     }
   }
-  
+
   /**
-   * Create Virtual Account for specific accountNumber
-   * 
+   * Create Virtual Account for specific accountNumber.
+   *
    * @param accountNumber accountNumber for virtualaccount
    * @return virtualAccount as JSON array
    * @throws SQLException Triggered if there are problems with SQL
    */
   @WebMethod(operationName = "createVirtualAccount")
   public String createVirtualAccount(
-      @WebParam(name="accountNumber") final String accountNumber)
+      @WebParam(name = "accountNumber") final String accountNumber)
       throws SQLException {
 
     JSONArray virtualAccount = new JSONArray();
     Random rnd = new Random();
-    String v_account = Long.toString(System.currentTimeMillis() * 1000 
-    + rnd.nextInt(900) + 100);
+    String vAccount = Long.toString(System.currentTimeMillis() * SERIBU
+    + rnd.nextInt(SEMBILANRATUS) + SERATUS);
 
     String query = "INSERT INTO virtual_account VALUES(?,?)";
 
@@ -214,12 +229,12 @@ public class BankService {
       USER,
       PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(Q_PARAM_1, v_account);
+        stmt.setString(Q_PARAM_1, vAccount);
         stmt.setString(Q_PARAM_2, accountNumber);
         stmt.executeQuery(query);
 
         JSONObject obj = new JSONObject();
-        obj.put("virtual_account", v_account);
+        obj.put("virtual_account", vAccount);
         virtualAccount.put(obj);
 
         return virtualAccount.toString();
