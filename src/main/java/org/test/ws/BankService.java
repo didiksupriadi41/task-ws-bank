@@ -59,6 +59,47 @@ public class BankService {
   public static final int Q_PARAM_4 = 4;
 
   /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_5 = 5;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_6 = 6;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_7 = 7;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_8 = 8;
+
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_9 = 9;
+
+  /**
+   * Query paramenter index.
+   */
+  public static final int Q_PARAM_10 = 10;
+
+  /**
+   * Length of virtual account number.
+   */
+  public static final int VIRTUAL_LEN = 16;
+
+  /**
+   * Length of account number.
+   */
+  public static final int ACCOUNT_LEN = 10;
+
+  /**
    * DEMO: sayHello.
    *
    * @param guestname someone's name
@@ -182,6 +223,121 @@ public class BankService {
         stmt.setString(Q_PARAM_2, endDate);
         stmt.setString(Q_PARAM_3, linkedNumber);
         stmt.setString(Q_PARAM_4, amount);
+        try (ResultSet rs = stmt.executeQuery()) {
+          return rs.first();
+        }
+      }
+    }
+  }
+
+  /**
+   * Do transactions.
+   *
+   * @param accountNumber String of account number.
+   * @param linkedNumber String of linked number.
+   * @param amount String of amount.
+   * @return <code>true</code> if transaction exist,
+   * <code>false</code> otherwise.
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  @WebMethod(operationName = "doTransaction")
+  public boolean doTransaction(
+      @WebParam(name = " accountNumber") final String accountNumber,
+      @WebParam(name = " linkedNumber") final String linkedNumber,
+      @WebParam(name = " amount") final String amount)
+      throws SQLException {
+
+    if (isEnough(accountNumber, amount)) {
+      return false;
+    }
+
+    String validNumber = "";
+    if (linkedNumber.length() == VIRTUAL_LEN) {
+      validNumber = getAccountNumberOf(linkedNumber);
+    } else if (linkedNumber.length() == ACCOUNT_LEN) {
+      validNumber = linkedNumber;
+    } else {
+      return false;
+    }
+
+    String query =
+      "INSERT INTO transaction VALUES(NOW(), ?, 'D', ?, ?);"
+      + "INSERT INTO transaction VALUES(NOW(), ?, 'K', ?, ?);"
+      + "UPDATE account SET balance = balance + ? WHERE account_number = ?;"
+      + "UPDATE account SET balance = balance - ? WHERE account_number = ?;";
+
+    try (Connection conn = DriverManager.getConnection(
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(Q_PARAM_1, validNumber);
+        stmt.setString(Q_PARAM_2, amount);
+        stmt.setString(Q_PARAM_3, accountNumber);
+        stmt.setString(Q_PARAM_4, accountNumber);
+        stmt.setString(Q_PARAM_5, amount);
+        stmt.setString(Q_PARAM_6, validNumber);
+        stmt.setString(Q_PARAM_7, amount);
+        stmt.setString(Q_PARAM_8, validNumber);
+        stmt.setString(Q_PARAM_9, amount);
+        stmt.setString(Q_PARAM_10, accountNumber);
+        try (ResultSet rs = stmt.executeQuery()) {
+          return true;
+        }
+      }
+    }
+  }
+
+  /**
+   * Get account number from virtual number.
+   *
+   * @param virtualNumber String of virtual number.
+   * @return String of account number.
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  private String getAccountNumberOf(
+      final String virtualNumber)
+      throws SQLException {
+    String query = "SELECT account_number "
+        + "FROM virtual_account "
+        + "WHERE virtual_number = ?;";
+
+    try (Connection conn = DriverManager.getConnection(
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(Q_PARAM_1, virtualNumber);
+        try (ResultSet rs = stmt.executeQuery()) {
+          return rs.getString("account_number");
+        }
+      }
+    }
+  }
+
+  /**
+   * Check if account balance is enough.
+   *
+   * @param accountNumber String of account number.
+   * @param amount String of amount.
+   * @return <code>true</code> if enough,
+   * <code>false</code> otherwise.
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  private boolean isEnough(final String accountNumber, final String amount)
+      throws SQLException {
+    String query = "SELECT * "
+      + "FROM account "
+      + "WHERE balance >= ? "
+      + "AND account_number = ?;";
+
+    try (Connection conn = DriverManager.getConnection(
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(Q_PARAM_1, amount);
+        stmt.setString(Q_PARAM_2, accountNumber);
         try (ResultSet rs = stmt.executeQuery()) {
           return rs.first();
         }
