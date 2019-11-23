@@ -166,6 +166,29 @@ public class BankService {
         }
       }
     }
+  }
+
+  /**
+   * Validate an account number.
+   *
+   * @param accountNumber String account number.
+   * @return true if account number exist, false otherwise.
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  @WebMethod(operationName = "validateAccountNumber")
+  public boolean validateAccountNumber(@WebParam(name = "accountNumber") final String accountNumber)
+      throws SQLException {
+
+    String query = "SELECT * " + "FROM transaction " + "WHERE account_number=? ";
+
+    try (Connection conn = DriverManager.getConnection(JDBC_MARIADB_BANK, USER, PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, accountNumber);
+        try (ResultSet rs = stmt.executeQuery()) {
+          return rs.first();
+        }
+      }
+    }
 
   }
 
