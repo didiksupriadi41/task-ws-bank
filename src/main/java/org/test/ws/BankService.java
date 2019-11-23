@@ -189,21 +189,38 @@ public class BankService {
       }
     }
   }
-
+  
+  /**
+   * Create Virtual Account for specific accountNumber
+   * 
+   * @param accountNumber accountNumber for virtualaccount
+   * @return virtualAccount as JSON array
+   * @throws SQLException Triggered if there are problems with SQL
+   */
   @WebMethod(operationName = "createVirtualAccount")
-  public String createVirtualAccount(@WebParam(name="accountNumber") String accountNumber) throws SQLException {
+  public String createVirtualAccount(
+      @WebParam(name="accountNumber") final String accountNumber)
+      throws SQLException {
+
     JSONArray virtualAccount = new JSONArray();
     Random rnd = new Random();
     String v_account = Long.toString(System.currentTimeMillis() * 1000 + rnd.nextInt(900) + 100);
+
     String query = "INSERT INTO virtual_account"
       + "VALUES(" + v_account + "," + accountNumber + ")";
 
-    try (Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/bank", "didik", "didik")){
-      try (Statement stmt = conn.createStatement()) {
+    try (Connection conn = DriverManager.getConnection(
+      JDBC_MARIADB_BANK,
+      USER,
+      PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, accountNumber);
         stmt.executeQuery(query);
+
         JSONObject obj = new JSONObject();
         obj.put("virtual_account", v_account);
         virtualAccount.put(obj);
+
         return virtualAccount.toString();
       }
     }
