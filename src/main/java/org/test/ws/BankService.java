@@ -161,7 +161,10 @@ public class BankService {
     @WebParam(name = "accountNumber") final String accountNumber)
     throws SQLException {
     JSONArray userData = new JSONArray();
-    String query = "SELECT * " + "FROM account NATURAL JOIN transaction "
+    String query = "SELECT * "
+      + "FROM account "
+      + "LEFT JOIN transaction "
+      + "USING (account_number) "
       + "WHERE account_number = ?;";
 
     try (Connection conn = DriverManager.getConnection(
