@@ -203,7 +203,7 @@ public class BankService {
    * @throws SQLException Triggered if there are problems with SQL
    */
   @WebMethod(operationName = "checkTransactionBetween")
-  public boolean checkTransactionBetween(
+  public String checkTransactionBetween(
       @WebParam(name = "linkedNumber") final String linkedNumber,
       @WebParam(name = "amount") final String amount,
       @WebParam(name = "startDate") final String startDate,
@@ -211,7 +211,7 @@ public class BankService {
 
     String query = "SELECT * " + "FROM transaction "
         + "WHERE transaction_time > ? " + "AND transaction_time < ? "
-        + "AND linked_number = ? " + "AND amount = ? " + "AND type = 'K';";
+        + "AND linked_number = ? " + "AND amount = ? " + "AND type = 'D';";
 
     try (Connection conn = DriverManager.getConnection(
       JDBC_MARIADB_BANK,
@@ -223,7 +223,7 @@ public class BankService {
         stmt.setString(Q_PARAM_3, linkedNumber);
         stmt.setString(Q_PARAM_4, amount);
         try (ResultSet rs = stmt.executeQuery()) {
-          return rs.first();
+          return rs.getString("transaction_time");
         }
       }
     }
@@ -262,7 +262,7 @@ public class BankService {
    * Create Virtual Account for specific accountNumber.
    *
    * @param accountNumber accountNumber for virtualaccount
-   * @return virtualAccount as JSON array
+   * @return virtualAccount as String
    * @throws SQLException Triggered if there are problems with SQL
    */
   @WebMethod(operationName = "createVirtualAccount")
@@ -270,12 +270,11 @@ public class BankService {
       @WebParam(name = "accountNumber") final String accountNumber)
       throws SQLException {
 
-    JSONArray virtualAccount = new JSONArray();
     Random rnd = new Random();
     String vAccount = Long.toString(System.currentTimeMillis() * SERIBU
     + rnd.nextInt(SEMBILANRATUS) + SERATUS);
 
-    String query = "INSERT INTO virtual_account VALUES(?,?)";
+    String query = "INSERT INTO virtual_account VALUES(?, ?)";
 
     try (Connection conn = DriverManager.getConnection(
       JDBC_MARIADB_BANK,
@@ -284,13 +283,9 @@ public class BankService {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
         stmt.setString(Q_PARAM_1, vAccount);
         stmt.setString(Q_PARAM_2, accountNumber);
-        stmt.executeQuery(query);
+        stmt.executeQuery();
 
-        JSONObject obj = new JSONObject();
-        obj.put("virtual_account", vAccount);
-        virtualAccount.put(obj);
-
-        return virtualAccount.toString();
+        return vAccount;
       }
     }
   }
@@ -347,7 +342,7 @@ public class BankService {
         stmtInsertD.setString(Q_PARAM_3, accountNumber);
         stmtInsertK.setString(Q_PARAM_1, accountNumber);
         stmtInsertK.setString(Q_PARAM_2, amount);
-        stmtInsertK.setString(Q_PARAM_3, linkedNumber);
+        stmtInsertK.setString(Q_PARAM_3, validNumber);
         stmtUpdateK.setString(Q_PARAM_1, amount);
         stmtUpdateK.setString(Q_PARAM_2, validNumber);
         stmtUpdateD.setString(Q_PARAM_1, amount);
@@ -383,6 +378,7 @@ public class BankService {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
         stmt.setString(Q_PARAM_1, virtualNumber);
         try (ResultSet rs = stmt.executeQuery()) {
+          rs.first();
           return rs.getString("account_number");
         }
       }
