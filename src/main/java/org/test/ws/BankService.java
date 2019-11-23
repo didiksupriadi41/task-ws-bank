@@ -23,6 +23,7 @@ public class BankService {
 
   /**
    * DEMO: sayHello.
+   *
    * @param guestname someone's name
    * @return string that say hello.
    */
@@ -36,6 +37,7 @@ public class BankService {
 
   /**
    * DEMO: checkCard.
+   *
    * @param cardNumber someone's card number
    * @return <code>true</code> if the card is exist in db
    */
@@ -48,6 +50,7 @@ public class BankService {
 
   /**
    * DEMO: Get the first nasabah's name in db.
+   *
    * @return name of the first nasabah in db
    * @throws SQLException if there are problems with the SQL
    */
@@ -68,6 +71,7 @@ public class BankService {
 
   /**
    * Get user data based on accountNumber.
+   *
    * @param accountNumber String of account number.
    * @return User data.
    * @throws SQLException Triggered if there are problems with the SQL
@@ -99,6 +103,44 @@ public class BankService {
             userData.put(obj);
           }
           return userData.toString();
+        }
+      }
+    }
+  }
+
+  /**
+   * Check transactions between two Date.
+   *
+   * @param linkedNumber String of start date.
+   * @param amount String of start date.
+   * @param startDate String of start date.
+   * @param endDate String of end date.
+   * @return true if transaction exist, false otherwise.
+   * @throws SQLException Triggered if there are problems with SQL
+   */
+  @WebMethod(operationName = "getUserData")
+  public boolean checkTransactionBetween(
+      @WebParam(name = "linkedNumber") final String linkedNumber,
+      @WebParam(name = "amount") final String amount,
+      @WebParam(name = "startDate") final String startDate,
+      @WebParam(name = "endDate") final String endDate)
+      throws SQLException {
+
+    String query = "SELECT * "
+      + "FROM transaction "
+      + "WHERE transaction_time > '" + startDate + "' "
+      + "AND transaction_time < '" + endDate + "' "
+      + "AND linked_number = '" + linkedNumber + "' "
+      + "AND amount = " + amount + " "
+      + "AND type = 'K';";
+
+    try (Connection conn = DriverManager.getConnection(
+          "jdbc:mariadb://localhost:3306/bank",
+          "didik",
+          "didik")) {
+      try (Statement stmt = conn.createStatement()) {
+        try (ResultSet rs = stmt.executeQuery(query)) {
+          return rs.first();
         }
       }
     }
