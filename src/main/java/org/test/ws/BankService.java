@@ -206,15 +206,15 @@ public class BankService {
     Random rnd = new Random();
     String v_account = Long.toString(System.currentTimeMillis() * 1000 + rnd.nextInt(900) + 100);
 
-    String query = "INSERT INTO virtual_account"
-      + "VALUES(" + v_account + "," + accountNumber + ")";
+    String query = "INSERT INTO virtual_account VALUES(?,?)";
 
     try (Connection conn = DriverManager.getConnection(
       JDBC_MARIADB_BANK,
       USER,
       PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, accountNumber);
+        stmt.setString(Q_PARAM_1, v_account);
+        stmt.setString(Q_PARAM_2, accountNumber);
         stmt.executeQuery(query);
 
         JSONObject obj = new JSONObject();
