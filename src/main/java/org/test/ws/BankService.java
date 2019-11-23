@@ -22,7 +22,6 @@ import java.util.Random;
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class BankService {
-
   /**
    * DB URL.
    */
