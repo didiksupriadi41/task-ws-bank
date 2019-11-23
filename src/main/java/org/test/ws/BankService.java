@@ -309,7 +309,7 @@ public class BankService {
       @WebParam(name = "amount") final String amount)
       throws SQLException {
 
-    if (isEnough(accountNumber, amount)) {
+    if (!isEnough(accountNumber, amount)) {
       return false;
     }
 
@@ -322,28 +322,37 @@ public class BankService {
       return false;
     }
 
-    String query =
-      "INSERT INTO transaction VALUES(NOW(), ?, 'D', ?, ?);"
-      + "INSERT INTO transaction VALUES(NOW(), ?, 'K', ?, ?);"
-      + "UPDATE account SET balance = balance + ? WHERE account_number = ?;"
-      + "UPDATE account SET balance = balance - ? WHERE account_number = ?;";
+    String queryInsertD = "INSERT INTO "
+      + "transaction VALUES(NOW(), ?, 'D', ?, ?);";
+    String queryInsertK = "INSERT INTO "
+      + "transaction VALUES(NOW(), ?, 'K', ?, ?);";
+    String queryUpdateK = "UPDATE account "
+      + "SET balance = balance + ? WHERE account_number = ?;";
+    String queryUpdateD = "UPDATE account "
+      + "SET balance = balance - ? WHERE account_number = ?;";
 
     try (Connection conn = DriverManager.getConnection(
         JDBC_MARIADB_BANK,
         USER,
         PASSWORD)) {
-      try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(Q_PARAM_1, validNumber);
-        stmt.setString(Q_PARAM_2, amount);
-        stmt.setString(Q_PARAM_3, accountNumber);
-        stmt.setString(Q_PARAM_4, accountNumber);
-        stmt.setString(Q_PARAM_5, amount);
-        stmt.setString(Q_PARAM_6, validNumber);
-        stmt.setString(Q_PARAM_7, amount);
-        stmt.setString(Q_PARAM_8, validNumber);
-        stmt.setString(Q_PARAM_9, amount);
-        stmt.setString(Q_PARAM_10, accountNumber);
-        try (ResultSet rs = stmt.executeQuery()) {
+      try (PreparedStatement stmtInsertD = conn.prepareStatement(queryInsertD);
+          PreparedStatement stmtInsertK = conn.prepareStatement(queryInsertK);
+          PreparedStatement stmtUpdateK = conn.prepareStatement(queryUpdateK);
+          PreparedStatement stmtUpdateD = conn.prepareStatement(queryUpdateD)) {
+        stmtInsertD.setString(Q_PARAM_1, validNumber);
+        stmtInsertD.setString(Q_PARAM_2, amount);
+        stmtInsertD.setString(Q_PARAM_3, accountNumber);
+        stmtInsertK.setString(Q_PARAM_1, accountNumber);
+        stmtInsertK.setString(Q_PARAM_2, amount);
+        stmtInsertK.setString(Q_PARAM_3, validNumber);
+        stmtUpdateK.setString(Q_PARAM_1, amount);
+        stmtUpdateK.setString(Q_PARAM_2, validNumber);
+        stmtUpdateD.setString(Q_PARAM_1, amount);
+        stmtUpdateD.setString(Q_PARAM_2, accountNumber);
+        try (ResultSet rs1 = stmtInsertD.executeQuery();
+            ResultSet rs2 = stmtInsertK.executeQuery();
+            ResultSet rs3 = stmtUpdateK.executeQuery();
+            ResultSet rs4 = stmtUpdateD.executeQuery()) {
           return true;
         }
       }
