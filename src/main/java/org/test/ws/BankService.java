@@ -304,9 +304,9 @@ public class BankService {
    */
   @WebMethod(operationName = "doTransaction")
   public boolean doTransaction(
-      @WebParam(name = " accountNumber") final String accountNumber,
-      @WebParam(name = " linkedNumber") final String linkedNumber,
-      @WebParam(name = " amount") final String amount)
+      @WebParam(name = "accountNumber") final String accountNumber,
+      @WebParam(name = "linkedNumber") final String linkedNumber,
+      @WebParam(name = "amount") final String amount)
       throws SQLException {
 
     if (isEnough(accountNumber, amount)) {
