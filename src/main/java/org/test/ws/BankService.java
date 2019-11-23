@@ -223,7 +223,11 @@ public class BankService {
         stmt.setString(Q_PARAM_3, linkedNumber);
         stmt.setString(Q_PARAM_4, amount);
         try (ResultSet rs = stmt.executeQuery()) {
-          return rs.getString("transaction_time");
+          if (rs.first()) {
+            return rs.getString("transaction_time");
+          } else {
+            return "";
+          }
         }
       }
     }
