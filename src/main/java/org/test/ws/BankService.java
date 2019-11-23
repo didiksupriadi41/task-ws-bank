@@ -342,12 +342,12 @@ public class BankService {
           PreparedStatement stmtInsertK = conn.prepareStatement(queryInsertK);
           PreparedStatement stmtUpdateK = conn.prepareStatement(queryUpdateK);
           PreparedStatement stmtUpdateD = conn.prepareStatement(queryUpdateD)) {
-        stmtInsertD.setString(Q_PARAM_1, validNumber);
+        stmtInsertD.setString(Q_PARAM_1, linkedNumber);
         stmtInsertD.setString(Q_PARAM_2, amount);
         stmtInsertD.setString(Q_PARAM_3, accountNumber);
         stmtInsertK.setString(Q_PARAM_1, accountNumber);
         stmtInsertK.setString(Q_PARAM_2, amount);
-        stmtInsertK.setString(Q_PARAM_3, validNumber);
+        stmtInsertK.setString(Q_PARAM_3, linkedNumber);
         stmtUpdateK.setString(Q_PARAM_1, amount);
         stmtUpdateK.setString(Q_PARAM_2, validNumber);
         stmtUpdateD.setString(Q_PARAM_1, amount);
