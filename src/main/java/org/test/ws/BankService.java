@@ -23,6 +23,7 @@ public class BankService {
 
   /**
    * DEMO: sayHello.
+   *
    * @param guestname someone's name
    * @return string that say hello.
    */
@@ -36,6 +37,7 @@ public class BankService {
 
   /**
    * DEMO: checkCard.
+   *
    * @param cardNumber someone's card number
    * @return <code>true</code> if the card is exist in db
    */
@@ -48,6 +50,7 @@ public class BankService {
 
   /**
    * DEMO: Get the first nasabah's name in db.
+   *
    * @return name of the first nasabah in db
    * @throws SQLException if there are problems with the SQL
    */
@@ -68,6 +71,7 @@ public class BankService {
 
   /**
    * Get user data based on accountNumber.
+   *
    * @param accountNumber String of account number.
    * @return User data.
    * @throws SQLException Triggered if there are problems with the SQL
