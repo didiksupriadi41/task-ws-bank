@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -20,6 +21,10 @@ import javax.jws.soap.SOAPBinding;
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class BankService {
+
+  public static final String JDBC_MARIADB_BANK = "jdbc:mariadb://localhost:3306/bank";
+  public static final String USER = "didik";
+  public static final String PASSWORD = "didik";
 
   /**
    * DEMO: sayHello.
@@ -57,9 +62,9 @@ public class BankService {
   @WebMethod(operationName = "getFirstNasabah")
   public String getFirstNasabah() throws SQLException {
     try (Connection conn = DriverManager.getConnection(
-        "jdbc:mariadb://localhost:3306/bank",
-        "didik",
-        "didik")) {
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
       try (Statement stmt = conn.createStatement()) {
         try (ResultSet rs = stmt.executeQuery("select * from account")) {
           rs.first();
@@ -78,19 +83,20 @@ public class BankService {
    */
   @WebMethod(operationName = "getUserData")
   public String getUserData(@WebParam(name = "accountNumber")
-      final String accountNumber) throws SQLException {
+      final String accountNumber)
+      throws SQLException {
     JSONArray userData = new JSONArray();
     String query = "SELECT * "
       + "FROM account NATURAL JOIN transaction "
-      + "WHERE account_number = " + accountNumber;
-    System.out.println(query);
+      + "WHERE account_number = ?;";
 
     try (Connection conn = DriverManager.getConnection(
-          "jdbc:mariadb://localhost:3306/bank",
-          "didik",
-          "didik")) {
-      try (Statement stmt = conn.createStatement()) {
-        try (ResultSet rs = stmt.executeQuery(query)) {
+        JDBC_MARIADB_BANK,
+        USER,
+        PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, accountNumber);
+        try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             JSONObject obj = new JSONObject();
             obj.put("name", rs.getString("name"));
@@ -111,14 +117,14 @@ public class BankService {
   /**
    * Check transactions between two Date.
    *
-   * @param linkedNumber String of start date.
-   * @param amount String of start date.
+   * @param linkedNumber String of linked number.
+   * @param amount String of amount.
    * @param startDate String of start date.
    * @param endDate String of end date.
-   * @return true if transaction exist, false otherwise.
+   * @return <code>true</code> if transaction exist, <code>false</code> otherwise.
    * @throws SQLException Triggered if there are problems with SQL
    */
-  @WebMethod(operationName = "getUserData")
+  @WebMethod(operationName = "checkTransactionBetween")
   public boolean checkTransactionBetween(
       @WebParam(name = "linkedNumber") final String linkedNumber,
       @WebParam(name = "amount") final String amount,
@@ -128,18 +134,22 @@ public class BankService {
 
     String query = "SELECT * "
       + "FROM transaction "
-      + "WHERE transaction_time > '" + startDate + "' "
-      + "AND transaction_time < '" + endDate + "' "
-      + "AND linked_number = '" + linkedNumber + "' "
-      + "AND amount = " + amount + " "
+      + "WHERE transaction_time > '?' "
+      + "AND transaction_time < '?' "
+      + "AND linked_number = '?' "
+      + "AND amount = '?' "
       + "AND type = 'K';";
 
     try (Connection conn = DriverManager.getConnection(
-          "jdbc:mariadb://localhost:3306/bank",
-          "didik",
-          "didik")) {
-      try (Statement stmt = conn.createStatement()) {
-        try (ResultSet rs = stmt.executeQuery(query)) {
+          JDBC_MARIADB_BANK,
+          USER,
+          PASSWORD)) {
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, startDate);
+        stmt.setString(2, endDate);
+        stmt.setString(3, linkedNumber);
+        stmt.setString(4, amount);
+        try (ResultSet rs = stmt.executeQuery()) {
           return rs.first();
         }
       }
