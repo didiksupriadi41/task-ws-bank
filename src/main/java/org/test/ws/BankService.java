@@ -322,10 +322,14 @@ public class BankService {
       return false;
     }
 
-    String queryInsertD = "INSERT INTO transaction VALUES(NOW(), ?, 'D', ?, ?);";
-    String queryInsertK = "INSERT INTO transaction VALUES(NOW(), ?, 'K', ?, ?);";
-    String queryUpdateK = "UPDATE account SET balance = balance + ? WHERE account_number = ?;";
-    String queryUpdateD = "UPDATE account SET balance = balance - ? WHERE account_number = ?;";
+    String queryInsertD = "INSERT INTO "
+      + "transaction VALUES(NOW(), ?, 'D', ?, ?);";
+    String queryInsertK = "INSERT INTO "
+      + "transaction VALUES(NOW(), ?, 'K', ?, ?);";
+    String queryUpdateK = "UPDATE account "
+      + "SET balance = balance + ? WHERE account_number = ?;";
+    String queryUpdateD = "UPDATE account "
+      + "SET balance = balance - ? WHERE account_number = ?;";
 
     try (Connection conn = DriverManager.getConnection(
         JDBC_MARIADB_BANK,
@@ -334,7 +338,7 @@ public class BankService {
       try (PreparedStatement stmtInsertD = conn.prepareStatement(queryInsertD);
           PreparedStatement stmtInsertK = conn.prepareStatement(queryInsertK);
           PreparedStatement stmtUpdateK = conn.prepareStatement(queryUpdateK);
-          PreparedStatement stmtUpdateD = conn.prepareStatement(queryUpdateD);) {
+          PreparedStatement stmtUpdateD = conn.prepareStatement(queryUpdateD)) {
         stmtInsertD.setString(Q_PARAM_1, validNumber);
         stmtInsertD.setString(Q_PARAM_2, amount);
         stmtInsertD.setString(Q_PARAM_3, accountNumber);
