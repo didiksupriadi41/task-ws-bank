@@ -204,7 +204,8 @@ public class BankService {
 
     JSONArray virtualAccount = new JSONArray();
     Random rnd = new Random();
-    String v_account = Long.toString(System.currentTimeMillis() * 1000 + rnd.nextInt(900) + 100);
+    String v_account = Long.toString(System.currentTimeMillis() * 1000 
+    + rnd.nextInt(900) + 100);
 
     String query = "INSERT INTO virtual_account VALUES(?,?)";
 
