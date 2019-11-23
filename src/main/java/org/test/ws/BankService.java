@@ -238,7 +238,7 @@ public class BankService {
     @WebParam(name = "accountNumber") final String accountNumber)
       throws SQLException {
 
-    String query = "SELECT * " + "FROM transaction "
+    String query = "SELECT * " + "FROM account "
       + "WHERE account_number=? ";
 
     try (Connection conn = DriverManager.getConnection(
