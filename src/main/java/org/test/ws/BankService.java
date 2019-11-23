@@ -183,7 +183,7 @@ public class BankService {
 
     try (Connection conn = DriverManager.getConnection(JDBC_MARIADB_BANK, USER, PASSWORD)) {
       try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, accountNumber);
+        stmt.setString(Q_PARAM_1, accountNumber);
         try (ResultSet rs = stmt.executeQuery()) {
           return rs.first();
         }
