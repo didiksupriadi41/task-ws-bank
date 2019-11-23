@@ -1,0 +1,25 @@
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+image: maven:3.5.4-jdk-8
+
+cache:
+  paths:
+    - .m2/repository
+
+stages:
+  - test
+  - deploy
+
+lint:
+  stage: test
+  script:
+    - mvn checkstyle:check
+
+deploy:
+  only:
+    - master
+    - develop
+  stage: deploy
+  script:
+    - bash deploy.sh
