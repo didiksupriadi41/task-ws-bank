@@ -115,6 +115,11 @@ public class BankService {
   public static final int ACCOUNT_LEN = 10;
 
   /**
+   * Minimum amount of transaction.
+   */
+  public static final int MINIMUM_AMOUNT = 10000;
+
+  /**
    * DEMO: sayHello.
    *
    * @param guestname someone's name
@@ -311,6 +316,10 @@ public class BankService {
       @WebParam(name = "amount") final String amount)
       throws SQLException {
 
+    if (Integer.parseInt(amount) <= MINIMUM_AMOUNT) {
+      return false;
+    }
+
     if (!isEnough(accountNumber, amount)) {
       return false;
     }
@@ -321,6 +330,10 @@ public class BankService {
     } else if (linkedNumber.length() == ACCOUNT_LEN) {
       validNumber = linkedNumber;
     } else {
+      return false;
+    }
+
+    if (accountNumber.equals(validNumber)) {
       return false;
     }
 
