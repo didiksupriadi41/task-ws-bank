@@ -25,17 +25,22 @@ RDBMS yang digunakan adalah **MariaDB**, dengan skema table berikut:
 ![Screenshot](https://i.imgur.com/OjOQ9AT.png)
 
 #### Pembagian tugas setiap anggota
-||Fungsi|NIM|
+|**No**|**Fungsi**|**NIM**|
 |-|-|-|
-|1|WS-Bank fungsi validasi no. rekening|13517012|
-|2|WS-Bank fungsi memberikan data rekening nasabah|13517069|
-|3|WS-Bank fungsi melakukan tranfer|13517069|
-|4|WS-Bank fungsi membuat akun virtual|13517126|
-|5|WS-Bank fungsi mengecek transaksi dalam rentang waktu|13517069|
+|1|WS-Bank fungsi validasi no. rekening|[13517012](#johanes)|
+|2|WS-Bank fungsi memberikan data rekening nasabah|[13517069](#didik-supriadi)|
+|3|WS-Bank fungsi melakukan tranfer|[13517069](#didik-supriadi)|
+|4|WS-Bank fungsi membuat akun virtual|[13517126](#louis-cahyadi)|
+|5|WS-Bank fungsi mengecek transaksi dalam rentang waktu|[13517069](#didik-supriadi)|
 
 #### Pembagian tugas setiap anggota
-||Tugas|NIM|
+|**No**|**Tugas**|**NIM**|
 |-|-|-|
-|1|Code reviewer (PIC)| 13517069|
-|2|CI/CD| 13517069|
-|3|Eksplorasi dan *setup* mesin deployment| 13517069|
+|1|Code reviewer (PIC)|[13517069](#didik-supriadi)|
+|2|CI/CD|[13517069](#didik-supriadi)|
+|3|Eksplorasi dan *setup* mesin deployment|[13517069](#didik-supriadi)|
+
+## Big thanks
+* #### Johanes
+* #### Didik Supriadi
+* #### Louis Cahyadi
