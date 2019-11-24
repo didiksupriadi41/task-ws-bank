@@ -40,6 +40,11 @@ RDBMS yang digunakan adalah **MariaDB**, dengan skema table berikut:
 |2|CI/CD|[13517069](#didik-supriadi)|
 |3|Eksplorasi dan *setup* mesin deployment|[13517069](#didik-supriadi)|
 
+#### URL deployment web service
+
+URL: [http://ma.kam-itb.com:8080/soap-test/bankService](http://ma.kam-itb.com:8080/soap-test/bankService)
+WSDL: [http://ma.kam-itb.com:8080/soap-test/bankService?wsdl](http://ma.kam-itb.com:8080/soap-test/bankService)
+
 ## Big thanks
 * #### Asisten IF3110
 * #### Johanes
