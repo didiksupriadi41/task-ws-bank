@@ -41,6 +41,7 @@ RDBMS yang digunakan adalah **MariaDB**, dengan skema table berikut:
 |3|Eksplorasi dan *setup* mesin deployment|[13517069](#didik-supriadi)|
 
 ## Big thanks
+* #### Asisten IF3110
 * #### Johanes
 * #### Didik Supriadi
 * #### Louis Cahyadi
